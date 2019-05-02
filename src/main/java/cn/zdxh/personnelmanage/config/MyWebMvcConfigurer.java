@@ -18,9 +18,9 @@ public class MyWebMvcConfigurer implements WebMvcConfigurer{
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        LoginInterceptor loginInterceptor = new LoginInterceptor();
-//            //注册拦截器，并添加拦截路径
-//            registry.addInterceptor(loginInterceptor).addPathPatterns("/admin/*","/employee/*","/excel/*");
-//            //TODO
+        LoginInterceptor loginInterceptor = new LoginInterceptor();
+        //注册拦截器，并添加拦截路径
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/admin/*","/employee/*","/excel/*");
+        //TODO
     }
 }
