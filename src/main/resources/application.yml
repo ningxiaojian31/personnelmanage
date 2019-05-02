@@ -1,7 +1,7 @@
 #数据库配置
 spring:
   datasource:
-    url: jdbc:mysql://47.107.126.98:3306/person_manage?serverTimezone=GMT
+    url: jdbc:mysql://localhost:3306/person_manage?serverTimezone=GMT
     driver-class-name: com.mysql.jdbc.Driver
     username: root
     password: 123456
@@ -22,9 +22,9 @@ logging:
 #图片上传的路径(自定义读取)
 pic:
   visitPath: http://localhost:8080/pic/
-            # http://47.107.126.98:8080/pic/
+
   savePath: E:/upload/picture/
-            # /usr/java/upload/picture/
+
 
 #项目访问路径前缀
 #server:
