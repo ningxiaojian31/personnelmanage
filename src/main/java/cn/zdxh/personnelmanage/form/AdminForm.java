@@ -1,5 +1,8 @@
 package cn.zdxh.personnelmanage.form;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -7,30 +10,35 @@ import java.io.Serializable;
 /**
  * 管理员表,接收表单的员工信息，并且带有数据校验的功能
  */
+@ApiModel("管理员信息")
 public class AdminForm {
 
 
     /**
      * 自增主键
      */
+    @ApiModelProperty(name = "id",value = "管理员id",required = true)
     private Integer id;
 
     /**
      * 用户名
      */
     @NotBlank(message = "登录名不能为空")
+    @ApiModelProperty(name = "username",value = "管理员用户名",required = true)
     private String username;
 
     /**
      * 密码
      */
     @NotBlank(message = "密码不能为空")
+    @ApiModelProperty(name = "username",value = "密码")
     private String password;
 
     /**
      * 标记是人事管理员2 还是系统管理员1
      */
     @NotNull(message = "请选择是系统管理员还是人事管理员")
+    @ApiModelProperty(name = "sign",value = "标记是人事管理员2 还是系统管理员1")
     private Integer sign;
 
 

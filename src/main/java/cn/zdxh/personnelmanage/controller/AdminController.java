@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -38,7 +40,7 @@ public class AdminController {
      * @return
      */
     @PostMapping("/adm")
-    public String register(@Valid AdminForm adminForm, BindingResult bindingResult, Map<String, Object> map){
+    public String register(@Valid @RequestBody AdminForm adminForm, BindingResult bindingResult, @ApiIgnore Map<String, Object> map){
         if (bindingResult.hasErrors()){
             //表单验证不通过，抛异常，信息是检查错误
             throw new MyException(ResultEnum.CHECK_ERROR.getCode(),bindingResult.getFieldError().getDefaultMessage());

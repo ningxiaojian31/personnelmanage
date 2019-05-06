@@ -1,11 +1,13 @@
 package cn.zdxh.personnelmanage.controller;
 
 
+import cn.zdxh.personnelmanage.dto.ResponseResult;
 import cn.zdxh.personnelmanage.enums.ResultEnum;
 import cn.zdxh.personnelmanage.exception.MyException;
 import cn.zdxh.personnelmanage.form.EmployeeForm;
 import cn.zdxh.personnelmanage.po.EmployeeInfo;
 import cn.zdxh.personnelmanage.service.EmployeeInfoService;
+import io.swagger.annotations.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 import org.thymeleaf.util.StringUtils;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +33,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/employee")
+@Api("员工管理接口")
 public class EmployeeInfoController {
 
     @Autowired
@@ -46,7 +50,12 @@ public class EmployeeInfoController {
      * @return
      */
     @GetMapping("/emps")
-    public String employees(@RequestParam(value = "currentPage",defaultValue = "0") String currentPage, @RequestParam(value = "limit",defaultValue = "2") String limit,Map<String,Object> map){
+    @ApiOperation(value = "查询所有的员工")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "currentPage", value = "当前页", required = false, dataType = "string"),
+            @ApiImplicitParam(paramType = "query", name = "limit", value = "每页数大小", required = false, dataType = "string")
+    })
+    public String employees(@RequestParam(value = "currentPage",defaultValue = "0") String currentPage, @RequestParam(value = "limit",defaultValue = "2") String limit,@ApiIgnore Map<String,Object> map){
         //向数据库查询值
         List<EmployeeInfo> allEmployees = employeeInfoService.findAllEmployees(Integer.parseInt(currentPage), Integer.parseInt(limit));
         Integer allCount = employeeInfoService.findAllCount();
@@ -66,7 +75,9 @@ public class EmployeeInfoController {
      * @return
      */
     @GetMapping("/emp/{id}")
-    public String employee(@PathVariable("id") Integer id,Map<String,Object> map){
+    @ApiOperation(value = "查询某个需要修改的员工,数据回显")
+    @ApiImplicitParam(paramType = "path",name = "id",value = "员工id",dataType = "integer",required = true)
+    public String employee(@PathVariable("id") Integer id,@ApiIgnore Map<String,Object> map){
         EmployeeInfo employee = employeeInfoService.findEmployee(id);
         map.put("employee",employee);
         return "employee/employee_update";
@@ -80,6 +91,8 @@ public class EmployeeInfoController {
      * @return
      */
     @PutMapping("/emp/{id}")
+    @ApiOperation(value = "更新员工信息",httpMethod = "Put")
+    @ApiImplicitParam(paramType = "path",dataType = "integer",name = "id",value = "员工id",required = true)
     public String updateEmployee(@Validated EmployeeForm employeeForm, BindingResult bindingResult,@PathVariable("id") Integer id){
         //数据校验出现错误的时候，需要抛个异常，并且异常捕获到异常页面
         if (bindingResult.hasErrors()){
@@ -112,6 +125,7 @@ public class EmployeeInfoController {
      * @return
      */
     @PostMapping("/emp")
+    @ApiOperation(value = "新增员工信息")
     public String insertEmployee(@Validated EmployeeForm employeeForm, BindingResult bindingResult){
         //数据校验出现错误的时候，需要抛个异常，并且异常捕获到异常页面
         if (bindingResult.hasErrors()){
@@ -133,6 +147,8 @@ public class EmployeeInfoController {
      * @return
      */
     @DeleteMapping("emp/{id}")
+    @ApiOperation(value = "删除员工")
+    @ApiImplicitParam(paramType = "path",dataType = "integer",name = "id",value = "员工id",required = true)
     public String deleteEmployee(@PathVariable("id") Integer id){
         employeeInfoService.deleteEmployee(id);
         return "employee/employee_list";
@@ -144,7 +160,9 @@ public class EmployeeInfoController {
      * @return
      */
     @PostMapping("/search")
-    public String searchEmployees(String content,Map<String,Object> map){
+    @ApiOperation("模糊搜索员工")
+    @ApiImplicitParam(paramType = "query" ,dataType = "string",name = "content",value = "搜索内容",required = false)
+    public String searchEmployees(String content,@ApiIgnore Map<String,Object> map){
         //搜索框的内容不为空时才进行搜索
         if (!StringUtils.isEmpty(content)) {
             List<EmployeeInfo> employeeInfos = employeeInfoService.findAllEmployeeInfosBySearch(content);
@@ -152,6 +170,15 @@ public class EmployeeInfoController {
             map.put("employees",employeeInfos);
         }
         return "employee/employee_list";
+    }
+
+    @GetMapping("/test/{id}")
+    @ResponseBody
+    @ApiOperation("测试返回的Employee数据")
+    @ApiImplicitParam(paramType = "path",name = "id",value = "员工id",dataType = "integer",required = true)
+    public ResponseResult<EmployeeInfo> test(@PathVariable Integer id){
+        EmployeeInfo employee = employeeInfoService.findEmployee(id);
+        return new ResponseResult<EmployeeInfo>(200,"成功",employee);
     }
 
 }
